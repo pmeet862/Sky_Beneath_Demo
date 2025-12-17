@@ -11,6 +11,7 @@ namespace SkyBeneathDemo.Input
 
 
         public Vector2 MoveInput;
+        public Vector2 LookInput;
         public Vector2Int GravityManipulationInput;
         private readonly List<Vector2Int> m_heldDirections = new();
         private readonly Dictionary<InputAction, Action<InputAction.CallbackContext>> m_performed = new();
@@ -28,6 +29,7 @@ namespace SkyBeneathDemo.Input
         {
             m_playerControls.Enable();
             m_playerControls.PlayerMovement.Movement.performed += OnMovementPerformed;
+            m_playerControls.PlayerMovement.Look.performed += OnLookPerformed;
             Bind(m_playerControls.PlayerMovement.GravityUp, Vector2Int.up);
             Bind(m_playerControls.PlayerMovement.GravityDown, Vector2Int.down);
             Bind(m_playerControls.PlayerMovement.GravityLeft, Vector2Int.left);
@@ -37,6 +39,7 @@ namespace SkyBeneathDemo.Input
         private void OnDisable()
         {
             m_playerControls.PlayerMovement.Movement.performed -= OnMovementPerformed;
+            m_playerControls.PlayerMovement.Look.performed -= OnLookPerformed;
             UnbindAll();
             m_playerControls.Disable();
         }
@@ -44,6 +47,11 @@ namespace SkyBeneathDemo.Input
         private void OnMovementPerformed(InputAction.CallbackContext context)
         {
             MoveInput = context.ReadValue<Vector2>();
+        }
+
+        private void OnLookPerformed(InputAction.CallbackContext context)
+        {
+            LookInput = context.ReadValue<Vector2>();
         }
 
         private void Bind(InputAction action, Vector2Int direction)

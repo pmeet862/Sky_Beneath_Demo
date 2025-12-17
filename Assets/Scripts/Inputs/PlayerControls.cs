@@ -104,6 +104,15 @@ namespace SkyBeneathDemo.Input
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Look"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""ff774062-102a-45d2-bfb0-0dd9d32ace3f"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""GravityUp"",
                     ""type"": ""Button"",
                     ""id"": ""53e60128-d96c-4648-87a0-18dbd2ab0247"",
@@ -239,6 +248,17 @@ namespace SkyBeneathDemo.Input
                     ""action"": ""GravityRight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f2ec4e89-f952-465b-9245-33ae4c2902bc"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -248,6 +268,7 @@ namespace SkyBeneathDemo.Input
             // PlayerMovement
             m_PlayerMovement = asset.FindActionMap("PlayerMovement", throwIfNotFound: true);
             m_PlayerMovement_Movement = m_PlayerMovement.FindAction("Movement", throwIfNotFound: true);
+            m_PlayerMovement_Look = m_PlayerMovement.FindAction("Look", throwIfNotFound: true);
             m_PlayerMovement_GravityUp = m_PlayerMovement.FindAction("GravityUp", throwIfNotFound: true);
             m_PlayerMovement_GravityDown = m_PlayerMovement.FindAction("GravityDown", throwIfNotFound: true);
             m_PlayerMovement_GravityLeft = m_PlayerMovement.FindAction("GravityLeft", throwIfNotFound: true);
@@ -333,6 +354,7 @@ namespace SkyBeneathDemo.Input
         private readonly InputActionMap m_PlayerMovement;
         private List<IPlayerMovementActions> m_PlayerMovementActionsCallbackInterfaces = new List<IPlayerMovementActions>();
         private readonly InputAction m_PlayerMovement_Movement;
+        private readonly InputAction m_PlayerMovement_Look;
         private readonly InputAction m_PlayerMovement_GravityUp;
         private readonly InputAction m_PlayerMovement_GravityDown;
         private readonly InputAction m_PlayerMovement_GravityLeft;
@@ -352,6 +374,10 @@ namespace SkyBeneathDemo.Input
             /// Provides access to the underlying input action "PlayerMovement/Movement".
             /// </summary>
             public InputAction @Movement => m_Wrapper.m_PlayerMovement_Movement;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerMovement/Look".
+            /// </summary>
+            public InputAction @Look => m_Wrapper.m_PlayerMovement_Look;
             /// <summary>
             /// Provides access to the underlying input action "PlayerMovement/GravityUp".
             /// </summary>
@@ -397,6 +423,9 @@ namespace SkyBeneathDemo.Input
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
                 @GravityUp.started += instance.OnGravityUp;
                 @GravityUp.performed += instance.OnGravityUp;
                 @GravityUp.canceled += instance.OnGravityUp;
@@ -423,6 +452,9 @@ namespace SkyBeneathDemo.Input
                 @Movement.started -= instance.OnMovement;
                 @Movement.performed -= instance.OnMovement;
                 @Movement.canceled -= instance.OnMovement;
+                @Look.started -= instance.OnLook;
+                @Look.performed -= instance.OnLook;
+                @Look.canceled -= instance.OnLook;
                 @GravityUp.started -= instance.OnGravityUp;
                 @GravityUp.performed -= instance.OnGravityUp;
                 @GravityUp.canceled -= instance.OnGravityUp;
@@ -482,6 +514,13 @@ namespace SkyBeneathDemo.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnMovement(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Look" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLook(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "GravityUp" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>

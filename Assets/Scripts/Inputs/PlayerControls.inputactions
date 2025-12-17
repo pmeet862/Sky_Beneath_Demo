@@ -16,6 +16,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Look",
+                    "type": "PassThrough",
+                    "id": "ff774062-102a-45d2-bfb0-0dd9d32ace3f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "GravityUp",
                     "type": "Button",
                     "id": "53e60128-d96c-4648-87a0-18dbd2ab0247",
@@ -149,6 +158,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "GravityRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2ec4e89-f952-465b-9245-33ae4c2902bc",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
