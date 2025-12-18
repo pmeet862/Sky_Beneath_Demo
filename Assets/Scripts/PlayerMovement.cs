@@ -32,39 +32,48 @@ namespace SkyBeneathDemo
 
         private void SetMovementDirection()
         {
-            m_moveDirection = m_camTR.forward * m_inputManager.MoveInput.y + m_camTR.right * m_inputManager.MoveInput.x;
-            m_moveDirection.y = 0f;
-            m_moveDirection.Normalize();
+            // 1. Get Camera vectors
+            Vector3 camFwd = m_camTR.forward;
+            Vector3 camRight = m_camTR.right;
+
+            // 2. Project them onto the plane defined by the Player's UP vector.
+            // This ensures "Forward" is always parallel to the wall/ceiling you are standing on.
+            Vector3 fwdProjected = Vector3.ProjectOnPlane(camFwd, transform.up).normalized;
+            Vector3 rightProjected = Vector3.ProjectOnPlane(camRight, transform.up).normalized;
+
+            // 3. Calculate direction
+            m_moveDirection = fwdProjected * m_inputManager.MoveInput.y + rightProjected * m_inputManager.MoveInput.x;
+
+            // Normalize safely
+            if (m_moveDirection.sqrMagnitude > 1f) m_moveDirection.Normalize();
         }
 
         private void HandleMovement()
         {
-            Vector3 moveVelocity = m_moveDirection * m_moveSpeed;
-            m_selfRB.linearVelocity = new Vector3(moveVelocity.x, m_selfRB.linearVelocity.y, moveVelocity.z);
+            // We cannot just set linearVelocity directly because that wipes out gravity's pull.
+            // We need to manipulate velocity ONLY on the plane we are standing on.
+
+            // Get current velocity relative to player orientation
+            Vector3 currentVelocity = m_selfRB.linearVelocity;
+
+            // Extract the vertical component (gravity falling speed) relative to player Up
+            float verticalSpeed = Vector3.Dot(currentVelocity, transform.up);
+            Vector3 gravityVelocity = transform.up * verticalSpeed;
+
+            // Calculate target planar velocity
+            Vector3 targetMoveVelocity = m_moveDirection * m_moveSpeed;
+
+            // Combine them: Movement (Planar) + Gravity (Vertical relative to local)
+            m_selfRB.linearVelocity = targetMoveVelocity + gravityVelocity;
         }
 
         private void HandleRotation()
         {
             if (m_moveDirection.sqrMagnitude > 0.01f)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(m_moveDirection, Vector3.up);
+                // Rotate towards move direction, but keep our Head aligned with transform.up
+                Quaternion targetRotation = Quaternion.LookRotation(m_moveDirection, transform.up);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * m_rotationSpeed);
-            }
-        }
-
-        private void ManageGravityInput()
-        {
-            if (m_inputManager.IsAnyGravityKeyHeld)
-            {
-                var direction = m_inputManager.GravityManipulationInput;
-
-                m_hologramPivot.localRotation = Quaternion.Euler(-direction.y * 90f, 0f, direction.x * 90f);
-                m_hologramPivot.gameObject.SetActive(true);
-            }
-            else if (m_hologramPivot.gameObject.activeSelf)
-            {
-                m_hologramPivot.localRotation = Quaternion.Euler(0f, 0f, 0f);
-                m_hologramPivot.gameObject.SetActive(false);
             }
         }
     }

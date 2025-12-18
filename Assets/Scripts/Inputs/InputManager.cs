@@ -42,6 +42,10 @@ namespace SkyBeneathDemo.Input
             m_playerControls.PlayerMovement.Look.performed -= OnLookPerformed;
             UnbindAll();
             m_playerControls.Disable();
+            MoveInput = Vector2.zero;
+            LookInput = Vector2.zero;
+            GravityManipulationInput = Vector2Int.zero;
+            m_heldDirections.Clear();
         }
 
         private void OnMovementPerformed(InputAction.CallbackContext context)
